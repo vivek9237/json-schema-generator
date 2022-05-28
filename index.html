@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>JSON to JSON Schema</title>
+      <style>
+         body {
+         margin: 0;
+         background: #333333;
+         }
+         .container {
+         display: grid;
+         grid-template-columns: 1fr 100px 1fr;
+         align-items: center;
+         height: 100vh;
+         box-sizing: border-box;
+         padding: 20px;
+         gap: 20px;
+         }
+         .large-area {
+         height: 100%;
+         padding: 20px;
+         box-sizing: border-box;
+         color: #aaaaaa;
+         background: #444444;
+         border: none;
+         border-radius: 10px;
+         outline: none;
+         resize: none;
+         font-family: monospace;
+         transition: background 0.25s, color 0.25s;
+         }
+         .large-area:hover,
+         .large-area:focus {
+         background: #4a4a4a;
+         }
+         .large-area:focus {
+         color: #eeeeee;
+         }
+         .controls__button {
+         padding: 8px 14px;
+         width: 100%;
+         margin-bottom: 10px;
+         border-radius: 5px;
+         border: none;
+         outline: none;
+         cursor: pointer;
+         background: #009578;
+         color: #ffffff;
+         font-weight: bold;
+         font-family: "Roboto";
+         }
+         .controls__button:active {
+         background: #00705a;
+         }
+      </style>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+      <!-- JQuery CDN -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="jsonSchemaBuilder.js"></script>
+   </head>
+   <body style="background-color:black;">
+      <div class="container-fluid" style="height:100%">
+         <div class="container">
+            <textarea class="large-area large-area--input" id="inputJson" placeholder="Enter your JSON here..."></textarea>
+            <div class="controls">
+               <button type="button" id="generateJsonSchema" onclick="generateJsonSchema()" class="controls__button controls__button--format">Generate</button>
+               <button type="button" onclick="copyJSONSchema()" class="controls__button controls__button--minify">Copy</button>
+            </div>
+            <textarea readonly id="jsonSchemaArea" class="large-area large-area--output" placeholder="Your Generated JSON Schema will appear here..."></textarea>
+         </div>
+      </div>
+   </body>
+</html>
