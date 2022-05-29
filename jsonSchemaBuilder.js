@@ -233,5 +233,3 @@ function generateJsonSchema() {
 	jsonSchemaEditor.getDoc().setValue(generatedJsonSchema);
 
 }
-jsonSchemaEditor.setOption("lineWrapping", true);
-jsonSchemaEditor.setOption("lineWrapping", false);
