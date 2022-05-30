@@ -28,15 +28,23 @@ var jsonSchemaEditor = CodeMirror.fromTextArea
 		mode: "application/ld+json",
 		theme: "dracula",
 		lineNumbers: true,
-		lineWrapping: true
-	});
-	jsonSchemaEditor.on('change', jsonSchemaEditor => {
-		try{
-			JSON.parse(jsonSchemaEditor.getValue())
-		} catch(err){
-			console.log("Invalid Json")
+		lineWrapping: true,
+		extraKeys: {
+			"F11": function (cm) {
+				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Esc": function (cm) {
+				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			}
 		}
 	});
+jsonSchemaEditor.on('change', jsonSchemaEditor => {
+	try {
+		JSON.parse(jsonSchemaEditor.getValue())
+	} catch (err) {
+		console.log("Invalid Json")
+	}
+});
 
 //jsonSchemaEditor.setSize(textareaWidth, textareaHeight);
 jsonSchemaEditor.setSize("100%", "100%");
@@ -46,7 +54,15 @@ var inputJsonEditor = CodeMirror.fromTextArea
 		mode: "application/ld+json",
 		theme: "dracula",
 		lineNumbers: true,
-		lineWrapping: true
+		lineWrapping: true,
+		extraKeys: {
+			"F11": function (cm) {
+				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Esc": function (cm) {
+				if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			}
+		}
 	});
 //inputJsonEditor.setSize(textareaWidth, textareaHeight);
 inputJsonEditor.setSize("100%", "100%");
@@ -62,32 +78,45 @@ function clearJsons() {
 	jsonSchemaEditor.getDoc().setValue("");
 	inputJsonEditor.getDoc().setValue("");
 }
-function wrapJsons(){
+function wrapJsons() {
 	jsonSchemaEditor.setOption("lineWrapping", true);
 	inputJsonEditor.setOption("lineWrapping", true);
 }
-function unwrapJsons(){
+function unwrapJsons() {
 	jsonSchemaEditor.setOption("lineWrapping", false);
 	inputJsonEditor.setOption("lineWrapping", false);
 }
 function minifyJsons() {
-	var temp1 = inputJsonEditor.getDoc().getValue();
-	var minifiedTemp1 = JSON.stringify(JSON.parse(temp1));
-	inputJsonEditor.getDoc().setValue(minifiedTemp1);
-
-	var temp2 = jsonSchemaEditor.getDoc().getValue();
-	var minifiedTemp2 = JSON.stringify(JSON.parse(temp2));
-	jsonSchemaEditor.getDoc().setValue(minifiedTemp2);
+	try {
+		var temp1 = inputJsonEditor.getDoc().getValue();
+		var minifiedTemp1 = JSON.stringify(JSON.parse(temp1));
+		inputJsonEditor.getDoc().setValue(minifiedTemp1);
+	} catch (err) {
+		console.log("Unable to parse inputJSON Editor");
+	} try {
+		var temp2 = jsonSchemaEditor.getDoc().getValue();
+		var minifiedTemp2 = JSON.stringify(JSON.parse(temp2));
+		jsonSchemaEditor.getDoc().setValue(minifiedTemp2);
+	} catch (err) {
+		console.log("Unable to parse inputJSON Editor");
+	}
 }
 
 function beautifyJsons() {
-	var temp1 = inputJsonEditor.getDoc().getValue();
-	var minifiedTemp1 = JSON.stringify(JSON.parse(temp1), null, 2);
-	inputJsonEditor.getDoc().setValue(minifiedTemp1);
-
-	var temp2 = jsonSchemaEditor.getDoc().getValue();
-	var minifiedTemp2 = JSON.stringify(JSON.parse(temp2), null, 2);
-	jsonSchemaEditor.getDoc().setValue(minifiedTemp2);
+	try {
+		var temp1 = inputJsonEditor.getDoc().getValue();
+		var minifiedTemp1 = JSON.stringify(JSON.parse(temp1), null, 2);
+		inputJsonEditor.getDoc().setValue(minifiedTemp1);
+	} catch (err) {
+		console.log("Unable to parse inputJSON Editor");
+	}
+	try {
+		var temp2 = jsonSchemaEditor.getDoc().getValue();
+		var minifiedTemp2 = JSON.stringify(JSON.parse(temp2), null, 2);
+		jsonSchemaEditor.getDoc().setValue(minifiedTemp2);
+	} catch (err) {
+		console.log("Unable to parse jsonSchema Editor");
+	}
 }
 
 
@@ -113,16 +142,20 @@ function getKeyObjectTypes(obj, tab) {
 					if (tempJsonArray[i]['type'] == 'string') {
 						jsonSchema['type'] = "string"
 						jsonSchema['title'] = attributename
+						jsonSchema['description'] = ""
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
 					} else if (tempJsonArray[i]['type'] == 'number') {
 						jsonSchema['type'] = "number"
 						jsonSchema['title'] = attributename
+						jsonSchema['description'] = ""
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
 					} else {
 						jsonSchema['type'] = "json array"
 						jsonSchema['title'] = attributename
+						jsonSchema['description'] = "<description of " + attributename + ">"
+						jsonSchema['static'] = "true"
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
 						if (jsonSchema['properties'] == null) {
@@ -141,6 +174,8 @@ function getKeyObjectTypes(obj, tab) {
 			} else {
 				jsonSchema['type'] = "json object"
 				jsonSchema['title'] = attributename
+				jsonSchema['description'] = "<description of " + attributename + ">"
+				jsonSchema['static'] = "true"
 				jsonSchema['multiValued'] = "false"
 				jsonSchema['value'] = ""
 
@@ -162,6 +197,7 @@ function getKeyObjectTypes(obj, tab) {
 		} else if (objectType == 'string') {
 			jsonSchema['type'] = "string"
 			jsonSchema['title'] = attributename
+			jsonSchema['description'] = ""
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -172,6 +208,7 @@ function getKeyObjectTypes(obj, tab) {
 		} else if (objectType == 'number') {
 			jsonSchema['type'] = "number"
 			jsonSchema['title'] = attributename
+			jsonSchema['description'] = ""
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -182,6 +219,7 @@ function getKeyObjectTypes(obj, tab) {
 		} else if (objectType == 'boolean') {
 			jsonSchema['type'] = "boolean"
 			jsonSchema['title'] = attributename
+			jsonSchema['description'] = ""
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -217,7 +255,7 @@ function generateJsonSchema() {
 	jsonSchemaBuilder['title'] = "<Enter title here>"
 	jsonSchemaBuilder['description'] = "<Enter description here>"
 	jsonSchemaBuilder['type'] = "object"
-	//jsonSchemaBuilder['schemaType']="static"
+	jsonSchemaBuilder['schemaType'] = "static"
 	jsonSchemaBuilder['required'] = []
 	jsonSchemaBuilder['domainObjects'] = ["user"]
 	jsonSchemaBuilder['properties'] = {}
