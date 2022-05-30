@@ -23,12 +23,14 @@ $(document).ready(function () {
 
 var textareaHeight = 500;
 var textareaWidth = 500;
+var waiting;
 var jsonSchemaEditor = CodeMirror.fromTextArea
 	(document.getElementById('jsonSchemaArea'), {
 		mode: "application/ld+json",
 		theme: "dracula",
 		lineNumbers: true,
 		lineWrapping: true,
+		scrollbarStyle: "simple",
 		extraKeys: {
 			"F11": function (cm) {
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
@@ -40,14 +42,39 @@ var jsonSchemaEditor = CodeMirror.fromTextArea
 	});
 jsonSchemaEditor.on('change', jsonSchemaEditor => {
 	try {
-		JSON.parse(jsonSchemaEditor.getValue())
+		clearTimeout(waiting);
+		waiting = setTimeout(updateHints, 500);
 	} catch (err) {
 		console.log("Invalid Json")
 	}
 });
+setTimeout(updateHints, 100);
+var widgets = [];
+function updateHints() {
+	jsonSchemaEditor.operation(function () {
+		for (var i = 0; i < widgets.length; ++i)
+			jsonSchemaEditor.removeLineWidget(widgets[i]);
+		widgets.length = 0;
 
-//jsonSchemaEditor.setSize(textareaWidth, textareaHeight);
-jsonSchemaEditor.setSize("100%", "100%");
+		JSHINT(jsonSchemaEditor.getValue());
+		for (var i = 0; i < JSHINT.errors.length; ++i) {
+			var err = JSHINT.errors[i];
+			if (!err) continue;
+			var msg = document.createElement("div");
+			var icon = msg.appendChild(document.createElement("span"));
+			icon.innerHTML = "⛔";
+			icon.className = "lint-error-icon";
+			msg.appendChild(document.createTextNode(err.reason));
+			msg.className = "lint-error";
+			widgets.push(jsonSchemaEditor.addLineWidget(err.line - 1, msg, { coverGutter: false, noHScroll: true }));
+			break;// added by vivek
+		}
+	});
+	var info = jsonSchemaEditor.getScrollInfo();
+	var after = jsonSchemaEditor.charCoords({ line: jsonSchemaEditor.getCursor().line + 1, ch: 0 }, "local").top;
+	if (info.top + info.clientHeight < after)
+		jsonSchemaEditor.scrollTo(null, after - info.clientHeight + 3);
+}
 
 var inputJsonEditor = CodeMirror.fromTextArea
 	(document.getElementById('inputJson'), {
@@ -55,6 +82,7 @@ var inputJsonEditor = CodeMirror.fromTextArea
 		theme: "dracula",
 		lineNumbers: true,
 		lineWrapping: true,
+		scrollbarStyle: "simple",
 		extraKeys: {
 			"F11": function (cm) {
 				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
@@ -65,7 +93,33 @@ var inputJsonEditor = CodeMirror.fromTextArea
 		}
 	});
 //inputJsonEditor.setSize(textareaWidth, textareaHeight);
+var where = 'bottom';
+var numPanels = 0;
+var panels = {};
+function makePanel(where, editorName) {
+	var node = document.createElement("div");
+	var id = ++numPanels;
+	var label;
+	node.id = "panel-" + id;
+	node.className = "panel " + where;
+	var buttonNode = document.createElement("button");
+	buttonNode.className = "controls__button controls__button--minify";
+	buttonNode.onclick = function () {
+		copyJson(editorName);
+	};
+	label = node.appendChild(buttonNode);
+	label.innerHTML = "Copy " + editorName;
+	return node;
+}
+function addPanel(where) {
+	var node1 = makePanel(where, "Input JSON");
+	var node2 = makePanel(where, "JSON Schema");
+	panels[node1.id] = inputJsonEditor.addPanel(node1, { position: where, stable: true });
+	panels[node2.id] = jsonSchemaEditor.addPanel(node2, { position: where, stable: true });
+}
+//addPanel(where);
 inputJsonEditor.setSize("100%", "100%");
+jsonSchemaEditor.setSize("100%", "100%");
 
 function isNumeric(str) {
 	return false;
@@ -244,7 +298,17 @@ function copyJSONSchema() {
 	var copyText = jsonSchemaEditor.getDoc().getValue();
 	navigator.clipboard.writeText(copyText);
 }
+function copyJson(editorName) {
+	/* Get the text field */
+	if (editorName == "JSON Schema") {
+		var copyText = jsonSchemaEditor.getDoc().getValue();
+		navigator.clipboard.writeText(copyText);
+	} else if (editorName == "Input JSON") {
+		var copyText = inputJsonEditor.getDoc().getValue();
+		navigator.clipboard.writeText(copyText);
+	}
 
+}
 function generateJsonSchema() {
 	console.log("generate");
 	var inputJson = inputJsonEditor.getDoc().getValue();

@@ -7,13 +7,40 @@
 	<title>JSON to JSON Schema</title>
 	<link href="codemirror.css" rel="stylesheet">
 	<script src="codemirror.js"></script>
+	<link href="simplescrollbars.css" rel="stylesheet">
+	<script src="simplescrollbars.js"></script>
 	<script src="clipboard.js"></script>
+	<script src="panel.js"></script>
 	<script src="javascript.js"></script>
 	<script src="placeholder.js"></script>
 	<link href="jsonSchemaBuilder.css" rel="stylesheet">
 	<link href="dracula.css" rel="stylesheet">
 	<script src="fullscreen.js"></script>
 	<link href="fullscreen.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.9.5/jshint.min.js"></script>
+	<style>
+		.CodeMirror {
+			border: 1px solid black;
+		}
+
+		.lint-error {
+			font-family: arial;
+			font-size: 80%;
+			background: rgb(247, 192, 192);
+			color: #a00;
+			font-weight: bold;
+			padding: 2px 5px 3px;
+		}
+
+		.lint-error-icon {
+			color: white;
+			background-color: rgb(247, 190, 190);
+			font-weight: bold;
+			border-radius: 50%;
+			padding: 0 3px;
+			margin-right: 7px;
+		}
+	</style>
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
@@ -37,17 +64,20 @@
 					<span class="labels" data-on="Beautify" data-off="Minify"></span>
 				</label>
 				&nbsp;
+				&nbsp;
 				<label class="toggle">
 					<input id="wordwrapCheckbox" type="checkbox" checked>
 					<span class="slider"></span>
-					<span class="labels" data-on="Wrap" data-off="Unwrap" ></span>
+					<span class="labels" data-on="Wrap" data-off="Unwrap"></span>
 				</label>
+				&nbsp;
 				&nbsp;
 				<button type="button" id="generateJsonSchema" onclick="generateJsonSchema()"
 					class="controls__button controls__button--format">Generate</button>
 				&nbsp;
 				<button type="button" onclick="copyJSONSchema()"
 					class="controls__button controls__button--minify">Copy</button>
+				&nbsp;
 				&nbsp;
 				<button type="button" onclick="clearJsons()"
 					class="controls__button controls__button--minify">Clear</button>
