@@ -209,7 +209,7 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['type'] = "json array"
 						jsonSchema['title'] = attributename
 						jsonSchema['description'] = "<description of " + attributename + ">"
-						jsonSchema['static'] = "true"
+						jsonSchema['schemaType'] = "static"
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
 						if (jsonSchema['properties'] == null) {
@@ -229,7 +229,7 @@ function getKeyObjectTypes(obj, tab) {
 				jsonSchema['type'] = "json object"
 				jsonSchema['title'] = attributename
 				jsonSchema['description'] = "<description of " + attributename + ">"
-				jsonSchema['static'] = "true"
+				jsonSchema['schemaType'] = "static"
 				jsonSchema['multiValued'] = "false"
 				jsonSchema['value'] = ""
 
