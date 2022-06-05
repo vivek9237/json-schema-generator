@@ -59,7 +59,7 @@
 			<textarea id="inputJson" placeholder="Enter your JSON here..."></textarea>
 			<div class="controls">
 				<label class="toggle">
-					<input id="minifyCheckbox" type="checkbox">
+					<input id="minifyCheckbox" type="checkbox" checked>
 					<span class="slider"></span>
 					<span class="labels" data-on="Beautify" data-off="Minify"></span>
 				</label>
@@ -71,7 +71,16 @@
 					<span class="labels" data-on="Wrap" data-off="Unwrap"></span>
 				</label>
 				&nbsp;
+				<div class="custom-select" style="width:100px;">
+					<select id="connectiontype">
+						<option value="NONE">NONE</option>
+						<option value="REST">REST(WIP)</option>
+					</select>
+				</div>
+
 				&nbsp;
+				&nbsp;
+
 				<button type="button" id="generateJsonSchema" onclick="generateJsonSchema()"
 					class="controls__button controls__button--format">Generate</button>
 				&nbsp;

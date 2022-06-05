@@ -1,0 +1,56 @@
+{
+    "REST": {
+        "accountParams": {
+            "title": "Account Parameters",
+            "description": "Specify the parameters to Import Accounts from the <AppName> Application (accountParams)"
+        },
+        "entitlementParams": {
+            "title": "Entitlement Parameters",
+            "description": "Specify the parameters to Import entitlements from the <AppName> Application"
+        },
+        "acctEntParams": {
+            "title": "Account-Entitlement Parameters",
+            "description": "Specify the parameters to import Account-Entitlement relationships from the <AppName> Application"
+        },
+        "call": {
+            "title": "Data Calls",
+            "description": ""
+        },
+        "call1": {
+            "title": "Data Call 1",
+            "description": ""
+        },
+        "colsToPropsMap": {
+            "title": "Columns to Properties Mapping",
+            "description": "Specify the mapping for account/entitlement attributes in EIC with account/entitlement objects from the <AppName> application "
+        },
+        "pagination": {
+            "title": "Pagination",
+            "description": "Specify the pagination parameters to successfully iterate through multiple pages"
+        },
+        "nextURL": {
+            "title": "nextURL",
+            "description": "Please refer to the REST Connector Guide "
+        },
+        "pageType": {
+            "title": "pageType",
+            "description": "Please refer to the REST Connector Guide "
+        },
+        "offset": {
+            "title": "offset",
+            "description": "Please refer to the REST Connector Guide "
+        },
+        "acctEntMappings": {
+            "title": "Account Entitlement Mapping",
+            "description": "Specify the parametes whenever entitlement attributes are available as part of Import Account API Response."
+        },
+        "entTypes": {
+            "title": "Entitlement Types",
+            "description": "Specify the different entitlement types available for the <AppName> Application"
+        },
+        "statusAndThresholdConfig": {
+            "title": "Status and Threshold Configuration Policy",
+            "description": "Define status mappings and import thresholds for accounts and access"
+        }
+    }
+}

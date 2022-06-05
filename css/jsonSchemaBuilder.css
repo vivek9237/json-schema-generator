@@ -1,146 +1,233 @@
 body {
-	margin: 0;
-	background: #333333;
+  margin: 0;
+  background: #333333;
 }
 
 .container {
-	display: grid;
-	grid-template-columns: 1fr 100px 1fr;
-	align-items: center;
-	height: 100vh;
-	box-sizing: border-box;
-	padding: 20px;
-	gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  align-items: center;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  gap: 20px;
 }
 
 .large-area {
-	height: 100%;
-	padding: 20px;
-	box-sizing: border-box;
-	color: #aaaaaa;
-	background: #444444;
-	border: none;
-	border-radius: 10px;
-	outline: none;
-	resize: none;
-	font-family: monospace;
-	transition: background 0.25s, color 0.25s;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #aaaaaa;
+  background: #444444;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  resize: none;
+  font-family: monospace;
+  transition: background 0.25s, color 0.25s;
 }
 
 .large-area:hover,
 .large-area:focus {
-	background: #4a4a4a;
+  background: #4a4a4a;
 }
 
 .large-area:focus {
-	color: #eeeeee;
+  color: #eeeeee;
 }
 
 .controls__button {
-	padding: 8px 14px;
-	width: 100%;
-	margin-bottom: 10px;
-	border-radius: 5px;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	background: #009578;
-	color: #ffffff;
-	font-weight: bold;
-	font-family: "Roboto";
+  padding: 8px 14px;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #009578;
+  color: #ffffff;
+  font-weight: bold;
+  font-family: "Roboto";
 }
 
 .controls__button:active {
-	background: #00705a;
+  background: #00705a;
+}
+/*
+###########
+###################
+Toggle switch CSS   ##############
+###################
+###########
+*/
+.toggle {
+  --width: 100px;
+  --height: 40px;
+  /*calc(var(--width) / 3);*/
+  position: relative;
+  display: inline-block;
+  width: var(--width);
+  height: var(--height);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+  border-radius: var(--height);
+  /* border-radius: 5px; */
+  cursor: pointer;
 }
 
-/*Toggle switch CSS*/
+.toggle input {
+  display: none;
+}
 
-.toggle {
-      --width: 100px;
-      --height: 40px;	/*calc(var(--width) / 3);*/
-      position: relative;
-      display: inline-block;
-      width: var(--width);
-      height: var(--height);
-      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-      border-radius: var(--height);
-      cursor: pointer;
-    }
+.toggle .slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--height);
+  /* border-radius: 5px; */
+  background-color: #ccc;
+  transition: all 0.2s ease-in-out;
+}
 
-    .toggle input {
-      display: none;
-    }
+.toggle .slider::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--height));
+  height: calc(var(--height));
+  border-radius: calc(var(--height) / 2);
+  background-color: #fff;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+}
 
-    .toggle .slider {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--height);
-      background-color: #ccc;
-      transition: all 0.2s ease-in-out;
-    }
+.toggle input:checked+.slider {
+  background-color: #009578;
+  /* border-radius: 5px; */
+}
 
-    .toggle .slider::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: calc(var(--height));
-      height: calc(var(--height));
-      border-radius: calc(var(--height) / 2);
-      background-color: #fff;
-      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s ease-in-out;
-    }
+.toggle input:checked+.slider::before {
+  transform: translateX(calc(var(--width) - var(--height)));
+}
 
-    .toggle input:checked+.slider {
-      background-color: #009578;
-    }
+.toggle .labels {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: sans-serif;
+  transition: all 0.2s ease-in-out;
+}
 
-    .toggle input:checked+.slider::before {
-      transform: translateX(calc(var(--width) - var(--height)));
-    }
+.toggle .labels::after {
+  content: attr(data-off);
+  position: absolute;
+  right: 5px;
+  color: #000000;
+  font-weight: bold;
+  /*text-decoration: line-through;*/
+  opacity: 1;
+  /*text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);*/
+  transition: all 0.2s ease-in-out;
+}
 
-    .toggle .labels {
-      position: absolute;
-      top: 8px;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 14px;
-	  font-weight: bold;
-      font-family: sans-serif;
-      transition: all 0.2s ease-in-out;
-    }
+.toggle .labels::before {
+  content: attr(data-on);
+  position: absolute;
+  left: 5px;
+  color: #ffffff;
+  opacity: 0;
+  /*text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);*/
+  transition: all 0.2s ease-in-out;
+}
 
-    .toggle .labels::after {
-      content: attr(data-off);
-      position: absolute;
-      right: 5px;
-      color: #000000;
-	  font-weight: bold;
-      opacity: 1;
-      /*text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);*/
-      transition: all 0.2s ease-in-out;
-    }
+.toggle input:checked~.labels::after {
+  opacity: 0;
+}
 
-    .toggle .labels::before {
-      content: attr(data-on);
-      position: absolute;
-      left: 5px;
-      color: #ffffff;
-      opacity: 0;
-      /*text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);*/
-      transition: all 0.2s ease-in-out;
-    }
+.toggle input:checked~.labels::before {
+  opacity: 1;
+}
 
-    .toggle input:checked~.labels::after {
-      opacity: 0;
-    }
+/*
+*####
+*##########
+*##################
+*drop down css     ########
+*##################
+*##########
+*####
+*/
+.custom-select {
+  position: relative;
+  /*font-family: "Roboto";*/
+  font-weight:bold;
+}
 
-    .toggle input:checked~.labels::before {
-      opacity: 1;
-    }
+.custom-select select {
+  display: none;
+  /*hide original SELECT element:*/
+}
+
+.select-selected {
+  background-color: #009578;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+
+/*style the items (options), including the selected item:*/
+.select-items div,
+.select-selected {
+  /*color: #ffffff;*/
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: #ccc;
+  color:#000000;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  font-size: 14px;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover,
+.same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}

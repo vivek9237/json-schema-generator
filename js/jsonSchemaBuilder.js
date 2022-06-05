@@ -1,109 +1,20 @@
 var tab = '';
+var attributeToTitleDescJson;
+var inital = 1;
 
-var attributeToTitle = {
-	"Accept":"AcceptTest",
-	"accessToken":"Access Token",
-	"accountIdPath":"AccountID Path",
-	"AccountNameRule":"Account Name Rule Policy",
-	"accountParams":"Account Parameters",
-	"accountsNotInImportAction":"Action on Accounts not imported",
-	"accountThresholdValue":"Maximum number of accounts that can be deleted during import",
-	"acctAuth":"Authentication Name",
-	"acctEntMappings":"Account to Entitlement Mapping",
-	"acctEntParams":"Account-Entitlement Parameters",
-	"acctIdPath":"AccountID Path",
-	"acctKeyField":"Account Key Field",
-	"activeStatus":"All values for active status",
-	"addGroup":"Add Group",
-	"additionalAttributes":"Additional Attributes",
-	"adminName":"Admin Name",
-	"apikey":"API Key",
-	"attributes":"Account Attributes",
-	"authentications":"Authentication",
-	"authError":"Authorization Error",
-	"Authorization":"AuthorizationTest",
-	"authType":"Authentication Type",
-	"baseDn":"Base DN for Group Creation",
-	"call":"API Calls",
-	"call1":"API Call 1",
-	"call2":"API Call 2",
-	"call3":"API Call 3",
-	"call4":"API Call 4",
-	"call5":"API Call 5",
-	"call6":"API Call 6",
-	"callOrder":"Call Order",
-	"cn":"CN",
-	"colsToPropsMap":"Columns to Properties Mapping",
-	"connection":"Connection Name",
-	"correlateInactiveAccounts":"Associate inactive accounts to users",
-	"createUsers":"Configure Create Users",
-	"deleteAccEntForActiveAccounts":"deleteAccEntForActiveAccounts",
-	"deleteAllGroups":"Delete all groups associated with the account",
-	"deleteChildObjects":"Delete Child Objects",
-	"deleteLinks":"Remove entitlements for missing accounts during import",
-	"disableDeletedAccounts":"Disable Deleted Accounts",
-	"disableDeletedEntitlements":"Disable Deleted Entitlements",
-	"distinguishedName":"Account DN",
-	"enable":"Enable",
-	"entitlement_value":"Entitlement Value",
-	"entitlementID":"Entitlement Id",
-	"entitlementParams":"Entitlement Parameters",
-	"entTypeOrder":"Entitlement Type Order",
-	"entTypes":"Entitlement Types",
-	"errorPath":"Error Path",
-	"errors":"List of Errors",
-	"expiryError":"Expiry Error",
-	"grant_type":"Grant Type",
-	"Group":"Group",
-	"groupExclusionListOnRemoval":"Exclude removal of these Groups",
-	"grpMemExistenceChk":"Check Group Membership",
-	"http":"HTTP Configuration",
-	"httpContentType":"HTTP Content-Type",
-	"httpHeaders":"HTTP Headers",
-	"httpMethod":"HTTP Method",
-	"httpParams":"HTTP Body",
-	"idPath":"ID Path",
-	"inactivateAccountsNotInFile":"Mark missing accounts as suspended during import",
-	"keyField":"Key Field",
-	"listField":"List Field",
-	"listPath":"List Path",
-	"maxRefreshTryCount":"Max Refresh Try Count",
-	"moveObjectToOU":"Move Account to OU",
-	"name":"Entitlement Type Name",
-	"nextUrl":"Next URL",
-	"nextUrlPath":"Next URL Path",
-	"objectClasses":"Object Classes",
-	"objects":"Add Access Account Policy",
-	"OData-Version":"OData Version",
-	"pagination":"Pagination",
-	"password":"Password",
-	"processingType":"Processing Type",
-	"properties":"Authentication Details",
-	"removeAction":"Remove Action",
-	"removeGroup":"DN of the group to be removed",
-	"requestConfiguration":"Request Configuration",
-	"responseColsToPropsMap":"Columns to Properties Mapping",
-	"retryFailureStatusCode":"Retry Failure Status Code",
-	"RuleCheck":"Account Name Rule Check",
-	"scope":"Scope",
-	"stageNumber":"Stage Number",
-	"statusAndThresholdConfig":"Status and Threshold Config",
-	"statusCode":"Status Code",
-	"statusColumn":"Status property in Saviynt",
-	"successReponse":"List of Success Response Codes",
-	"successResponses":"Success Response",
-	"testConnectionParams":"Test Connection Settings",
-	"ticketStatusPath":"Ticket Status path",
-	"ticketStatusValue":"List of status",
-	"timeOutError":"Time-out Error",
-	"tokenResponsePath":"Token Response Path",
-	"tokenType":"Token Type",
-	"unsuccessResponses":"Unsuccess Responses",
-	"url":"URL",
-	"userAuth":"User Authorization",
-	"userName":"Username"
- };
-
+function readTextFile(file) {
+	var rawFile = new XMLHttpRequest();
+	rawFile.open("GET", file, false);
+	rawFile.onreadystatechange = function () {
+		if (rawFile.readyState === 4) {
+			if (rawFile.status === 200 || rawFile.status == 0) {
+				attributeToTitleDescJson = JSON.parse(rawFile.responseText);
+			}
+		}
+	}
+	rawFile.send(null);
+}
+readTextFile("properties/attributeToTitleDesc.json")
 
 $(document).ready(function () {
 	$('input#wordwrapCheckbox').change(
@@ -169,7 +80,7 @@ function updateHints() {
 			var icon = msg.appendChild(document.createElement("span"));
 			icon.innerHTML = "⛔";
 			icon.className = "lint-error-icon";
-			msg.appendChild(document.createTextNode(err.reason));
+			msg.appendChild(document.createTextNode(err.reason));//Show detailed error
 			msg.className = "lint-error";
 			widgets.push(jsonSchemaEditor.addLineWidget(err.line - 1, msg, { coverGutter: false, noHScroll: true }));
 			break;// added by vivek
@@ -197,6 +108,7 @@ var inputJsonEditor = CodeMirror.fromTextArea
 			}
 		}
 	});
+// inputJsonEditor.on('change', jsonSchemaEditor => {console.log("write code here")});
 //inputJsonEditor.setSize(textareaWidth, textareaHeight);
 var where = 'bottom';
 var numPanels = 0;
@@ -278,6 +190,47 @@ function beautifyJsons() {
 	}
 }
 
+function getAttributeTitle(attribute) {
+	var connectionType = document.getElementById("connectiontype").value;
+	console.log(attributeToTitleDescJson[connectionType]);
+	if (connectionType == "NONE") {
+		return attribute;
+	} else if (attributeToTitleDescJson[connectionType] != undefined) {
+		if (attributeToTitleDescJson[connectionType][attribute] != undefined) {
+			if (attributeToTitleDescJson[connectionType][attribute]["title"] != undefined) {
+				console.log(attributeToTitleDescJson[connectionType][attribute]["title"]);
+				return attributeToTitleDescJson[connectionType][attribute]["title"];
+			} else {
+				return attribute;
+			}
+		} else {
+			return attribute;
+		}
+	} else {
+		return attribute;
+	}
+
+}
+function getAttributeDescription(attribute) {
+	var connectionType = document.getElementById("connectiontype").value;
+	console.log(attributeToTitleDescJson[connectionType]);
+	if (connectionType == "NONE") {
+		return "";
+	} else if (attributeToTitleDescJson[connectionType] != undefined) {
+		if (attributeToTitleDescJson[connectionType][attribute] != undefined) {
+			if (attributeToTitleDescJson[connectionType][attribute]["description"] != undefined) {
+				console.log(attributeToTitleDescJson[connectionType][attribute]["description"]);
+				return attributeToTitleDescJson[connectionType][attribute]["description"];
+			} else {
+				return "";
+			}
+		} else {
+			return "";
+		}
+	} else {
+		return "";
+	}
+}
 
 function getKeyObjectTypes(obj, tab) {
 	//console.log("calling getKeyObjectTypes")
@@ -300,33 +253,20 @@ function getKeyObjectTypes(obj, tab) {
 				for (let i = 0; i < tempJsonArray.length; i++) {
 					if (tempJsonArray[i]['type'] == 'string') {
 						jsonSchema['type'] = "string"
-						if(attributeToTitle[attributename]!=undefined){
-							jsonSchema['title'] = attributeToTitle[attributename];
-						} else{
-							jsonSchema['title'] = attributename;
-						}
-						jsonSchema['title'] = attributename
-						jsonSchema['description'] = ""
+						jsonSchema['title'] = getAttributeTitle(attributename);
+						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
 					} else if (tempJsonArray[i]['type'] == 'number') {
 						jsonSchema['type'] = "number"
-						if(attributeToTitle[attributename]!=undefined){
-							jsonSchema['title'] = attributeToTitle[attributename];
-						} else{
-							jsonSchema['title'] = attributename;
-						}
-						jsonSchema['description'] = ""
+						jsonSchema['title'] = getAttributeTitle(attributename);
+						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
 					} else {
 						jsonSchema['type'] = "json array"
-						if(attributeToTitle[attributename]!=undefined){
-							jsonSchema['title'] = attributeToTitle[attributename];
-						} else{
-							jsonSchema['title'] = attributename;
-						}
-						jsonSchema['description'] = "<description of " + attributename + ">"
+						jsonSchema['title'] = getAttributeTitle(attributename);
+						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['schemaType'] = "static"
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
@@ -345,12 +285,8 @@ function getKeyObjectTypes(obj, tab) {
 				//return [attributename,jsonSchema]
 			} else {
 				jsonSchema['type'] = "json object"
-				if(attributeToTitle[attributename]!=undefined){
-					jsonSchema['title'] = attributeToTitle[attributename];
-				} else{
-					jsonSchema['title'] = attributename;
-				}
-				jsonSchema['description'] = "<description of " + attributename + ">"
+				jsonSchema['title'] = getAttributeTitle(attributename);
+				jsonSchema['description'] = getAttributeDescription(attributename);
 				jsonSchema['schemaType'] = "static"
 				jsonSchema['multiValued'] = "false"
 				jsonSchema['value'] = ""
@@ -372,12 +308,8 @@ function getKeyObjectTypes(obj, tab) {
 			}
 		} else if (objectType == 'string') {
 			jsonSchema['type'] = "string"
-			if(attributeToTitle[attributename]!=undefined){
-				jsonSchema['title'] = attributeToTitle[attributename];
-			} else{
-				jsonSchema['title'] = attributename;
-			}
-			jsonSchema['description'] = ""
+			jsonSchema['title'] = getAttributeTitle(attributename);
+			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -387,12 +319,8 @@ function getKeyObjectTypes(obj, tab) {
 			//return [attributename,jsonSchema]
 		} else if (objectType == 'number') {
 			jsonSchema['type'] = "number"
-			if(attributeToTitle[attributename]!=undefined){
-				jsonSchema['title'] = attributeToTitle[attributename];
-			} else{
-				jsonSchema['title'] = attributename;
-			}
-			jsonSchema['description'] = ""
+			jsonSchema['title'] = getAttributeTitle(attributename);
+			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -402,12 +330,8 @@ function getKeyObjectTypes(obj, tab) {
 			//return [attributename,jsonSchema]
 		} else if (objectType == 'boolean') {
 			jsonSchema['type'] = "boolean"
-			if(attributeToTitle[attributename]!=undefined){
-				jsonSchema['title'] = attributeToTitle[attributename];
-			} else{
-				jsonSchema['title'] = attributename;
-			}
-			jsonSchema['description'] = ""
+			jsonSchema['title'] = getAttributeTitle(attributename);
+			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
 			if (!isNumeric(attributename)) {
@@ -464,3 +388,92 @@ function generateJsonSchema() {
 	jsonSchemaEditor.getDoc().setValue(generatedJsonSchema);
 
 }
+//##########
+//###################
+//##############################
+//dropdown js					###########
+//##############################
+//###################
+//##########
+
+var x, i, j, l, ll, selElmnt, a, b, c;
+/*look for any elements with the class "custom-select":*/
+x = document.getElementsByClassName("custom-select");
+l = x.length;
+for (i = 0; i < l; i++) {
+	selElmnt = x[i].getElementsByTagName("select")[0];
+	ll = selElmnt.length;
+	/*for each element, create a new DIV that will act as the selected item:*/
+	a = document.createElement("DIV");
+	a.setAttribute("class", "select-selected");
+	a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+	x[i].appendChild(a);
+	/*for each element, create a new DIV that will contain the option list:*/
+	b = document.createElement("DIV");
+	b.setAttribute("class", "select-items select-hide");
+	for (j = 0; j < ll; j++) {
+		/*for each option in the original select element,
+		create a new DIV that will act as an option item:*/
+		c = document.createElement("DIV");
+		c.innerHTML = selElmnt.options[j].innerHTML;
+		c.addEventListener("click", function (e) {
+			/*when an item is clicked, update the original select box,
+			and the selected item:*/
+			var y, i, k, s, h, sl, yl;
+			s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+			sl = s.length;
+			h = this.parentNode.previousSibling;
+			for (i = 0; i < sl; i++) {
+				if (s.options[i].innerHTML == this.innerHTML) {
+					s.selectedIndex = i;
+					h.innerHTML = this.innerHTML;
+					y = this.parentNode.getElementsByClassName("same-as-selected");
+					yl = y.length;
+					for (k = 0; k < yl; k++) {
+						y[k].removeAttribute("class");
+					}
+					this.setAttribute("class", "same-as-selected");
+					break;
+				}
+			}
+			h.click();
+		});
+		b.appendChild(c);
+	}
+	x[i].appendChild(b);
+	a.addEventListener("click", function (e) {
+		/*when the select box is clicked, close any other select boxes,
+		and open/close the current select box:*/
+		e.stopPropagation();
+		closeAllSelect(this);
+		this.nextSibling.classList.toggle("select-hide");
+		this.classList.toggle("select-arrow-active");
+	});
+}
+function closeAllSelect(elmnt) {
+	/*a function that will close all select boxes in the document,
+	except the current select box:*/
+	var x, y, i, xl, yl, arrNo = [];
+	x = document.getElementsByClassName("select-items");
+	y = document.getElementsByClassName("select-selected");
+	xl = x.length;
+	yl = y.length;
+	for (i = 0; i < yl; i++) {
+		if (elmnt == y[i]) {
+			arrNo.push(i)
+		} else {
+			y[i].classList.remove("select-arrow-active");
+		}
+	}
+	for (i = 0; i < xl; i++) {
+		if (arrNo.indexOf(i)) {
+			x[i].classList.add("select-hide");
+		}
+	}
+}
+/*if the user clicks anywhere outside the select box,
+then close all select boxes:*/
+document.addEventListener("click", closeAllSelect);
+console.log(attributeToTitleDescJson);
+
+getAttributeDescription("Accept");
