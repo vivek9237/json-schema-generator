@@ -1,6 +1,7 @@
 var tab = '';
 var attributeToTitleDescJson;
 var inital = 1;
+var renderSchema = true;
 
 function readTextFile(file) {
 	var rawFile = new XMLHttpRequest();
@@ -270,11 +271,14 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['schemaType'] = "static"
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
-						if (jsonSchema['properties'] == null) {
+						if (jsonSchema['properties'] == undefined) {
 							jsonSchema['properties'] = {}
+							jsonSchema['properties'] = tempJsonArray[i]['properties']
+						} else {
+							//resolved https://github.com/vivek9237/json-schema-generator/issues/1
+							resultantProperties = getMergedSchema(jsonSchema['properties'], tempJsonArray[i]['properties']);
+							jsonSchema['properties'] = resultantProperties;
 						}
-						jsonSchema['properties'] = tempJsonArray[i]['properties']
-						console.log(tempJsonArray[i]['properties'])
 					}
 					jsonSchemaArray.push(jsonSchema)
 					//propertyArray.push(tempPropArray[i])
@@ -364,6 +368,7 @@ function copyJson(editorName) {
 }
 function generateJsonSchema() {
 	console.log("generate");
+	renderSchema = true;
 	var inputJson = inputJsonEditor.getDoc().getValue();
 	console.log(inputJson);
 	const obj = JSON.parse(inputJson);
@@ -384,10 +389,40 @@ function generateJsonSchema() {
 	}
 	var generatedJsonSchema = JSON.stringify(jsonSchemaBuilder, null, 2);
 	//document.getElementById("jsonSchemaArea").value=generatedJsonSchema;
-
-	jsonSchemaEditor.getDoc().setValue(generatedJsonSchema);
-
+	if (renderSchema) {
+		jsonSchemaEditor.getDoc().setValue(generatedJsonSchema);
+	}
 }
+
+function getMergedSchema(exisitingProperties, incomingProperties) {
+	console.log("exisitingProperties = ")
+	console.log(exisitingProperties)
+	console.log("incomingProperties = ")
+	console.log(incomingProperties)
+	var resultantProperties = {};
+	for (var temp in exisitingProperties) {
+		resultantProperties[temp] = exisitingProperties[temp];
+	}
+	for (var temp in incomingProperties) {
+		if (resultantProperties[temp] == undefined) {
+			resultantProperties[temp] = incomingProperties[temp];
+		}
+		else {
+			if (!_.isEqual(resultantProperties[temp], incomingProperties[temp])) {
+				if (resultantProperties[temp]['type'] != incomingProperties[temp]['type']) {
+					alert("Encountered inconsistency in the data type of attribute - '" + resultantProperties[temp]['title'] + "'\nJson Schema will not be generated!");
+					renderSchema=false;
+				} else {
+					resultantProperties[temp] = getMergedSchema(resultantProperties[temp], incomingProperties[temp])
+				}
+			}
+		}
+	}
+	return resultantProperties;
+}
+
+
+
 //##########
 //###################
 //##############################
