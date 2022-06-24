@@ -5,16 +5,6 @@
 	<link rel="shortcut icon" href="icons/favicon.ico" type="image/x-icon">
 
 	<title>JSON to JSON Schema</title>
-	<!-- Google Tag Manager -->
-	<script>(function (w, d, s, l, i) {
-			w[l] = w[l] || []; w[l].push({
-				'gtm.start':
-					new Date().getTime(), event: 'gtm.js'
-			}); var f = d.getElementsByTagName(s)[0],
-				j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-					'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-		})(window, document, 'script', 'dataLayer', 'GTM-W3M2S8V');</script>
-	<!-- End Google Tag Manager -->
 	<link href="css/codemirror.css" rel="stylesheet">
 	<script src="js/codemirror.js"></script>
 	<link href="css/simplescrollbars.css" rel="stylesheet">
@@ -65,10 +55,6 @@
 </head>
 
 <body style="background-color:black;">
-	<!-- Google Tag Manager (noscript) -->
-	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W3M2S8V" height="0" width="0"
-			style="display:none;visibility:hidden"></iframe></noscript>
-	<!-- End Google Tag Manager (noscript) -->
 	<div class="container-fluid" style="height:100%">
 		<div class="container">
 			<textarea id="inputJson" placeholder="Enter your JSON here..."></textarea>
@@ -107,7 +93,6 @@
 					class="controls__button controls__button--minify">Clear</button>
 
 			</div>
-			<!--textarea readonly id="jsonSchemaArea" class="large-area large-area--output" placeholder="Your Generated JSON Schema will appear here..."></textarea-->
 			<textarea id="jsonSchemaArea" placeholder="The generated JSON Schema will appear here..."></textarea>
 			<script type="text/javascript" src="js/jsonSchemaBuilder.js"></script>
 		</div>

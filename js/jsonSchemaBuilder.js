@@ -84,7 +84,7 @@ function updateHints() {
 			msg.appendChild(document.createTextNode(err.reason));//Show detailed error
 			msg.className = "lint-error";
 			widgets.push(jsonSchemaEditor.addLineWidget(err.line - 1, msg, { coverGutter: false, noHScroll: true }));
-			break;// added by vivek
+			break;// added by vivek | it will only show one error
 		}
 	});
 	var info = jsonSchemaEditor.getScrollInfo();
