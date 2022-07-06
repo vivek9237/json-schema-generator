@@ -1,56 +1,168 @@
 {
     "REST": {
+        "Accept": {
+            "title": "Accept",
+            "description": "Specify the Accept Value in the header"
+        },
         "accountParams": {
-            "title": "Account Parameters",
-            "description": "Specify the parameters to Import Accounts from the <AppName> Application (accountParams)"
+            "title": "accountParams",
+            "description": "Configure the below for Importing Accounts"
         },
-        "entitlementParams": {
-            "title": "Entitlement Parameters",
-            "description": "Specify the parameters to Import entitlements from the <AppName> Application"
-        },
-        "acctEntParams": {
-            "title": "Account-Entitlement Parameters",
-            "description": "Specify the parameters to import Account-Entitlement relationships from the <AppName> Application"
-        },
-        "call": {
-            "title": "Data Calls",
-            "description": ""
-        },
-        "call1": {
-            "title": "Data Call 1",
-            "description": ""
-        },
-        "colsToPropsMap": {
-            "title": "Columns to Properties Mapping",
-            "description": "Specify the mapping for account/entitlement attributes in EIC with account/entitlement objects from the <AppName> application "
-        },
-        "pagination": {
-            "title": "Pagination",
-            "description": "Specify the pagination parameters to successfully iterate through multiple pages"
-        },
-        "nextURL": {
-            "title": "nextURL",
-            "description": "Please refer to the REST Connector Guide "
-        },
-        "pageType": {
-            "title": "pageType",
-            "description": "Please refer to the REST Connector Guide "
-        },
-        "offset": {
-            "title": "offset",
-            "description": "Please refer to the REST Connector Guide "
+        "accountThresholdValue": {
+            "title": "accountThresholdValue",
+            "description": "Specify accountThresholdValue as 10 to suspend or delete a maximum of 10 accounts. If the number of accounts exceeds the threshold value, no action (suspension or deletion) is taken on the existing accounts"
         },
         "acctEntMappings": {
-            "title": "Account Entitlement Mapping",
-            "description": "Specify the parametes whenever entitlement attributes are available as part of Import Account API Response."
+            "title": "acctEntMappings",
+            "description": "Configure the below to set the Account-Entitlement Mapping during Account Import"
+        },
+        "acctEntParams": {
+            "title": "acctEntParams",
+            "description": "Configure the below for Accounts & Entitlements Association"
+        },
+        "acctIdPath": {
+            "title": "acctIdPath",
+            "description": "Use this variable to define the path of the account ID in the respose JSON."
+        },
+        "acctKeyField": {
+            "title": "acctKeyField",
+            "description": "Use this variable to define the key field that uniquely identifies the account."
+        },
+        "activeStatus": {
+            "title": "activeStatus",
+            "description": "Specify the values for that are identified as Active from the API response"
+        },
+        "Authorization": {
+            "title": "Authorization",
+            "description": "Specify the Authorizaion Value in the header"
+        },
+        "call": {
+            "title": "call",
+            "description": "Configure the below to make a call to the <Application> API"
+        },
+        "call1": {
+            "title": "call1",
+            "description": "Configure the 1st API call"
+        },
+        "callOrder": {
+            "title": "callOrder",
+            "description": "Specify the order to call APIs<br>Specify the value for the first call as zero. The lowest order value is called the first call"
+        },
+        "Columns to Properties Mapping": {
+            "title": "Columns to Properties Mapping",
+            "description": "Specify the mapping between the target application objects and EIC account objects"
+        },
+        "connection": {
+            "title": "connection",
+            "description": "Specify the connection name defined in the connection policy"
+        },
+        "correlateInactiveAccounts": {
+            "title": "correlateInactiveAccounts",
+            "description": "Specify correlateInactiveAccounts as false if you do not want to correlate inactive accounts to users. If true, the connector correlates inactive accounts to users"
+        },
+        "deleteAccEntForActiveAccounts": {
+            "title": "deleteAccEntForActiveAccounts",
+            "description": "Specify deleteAccEntForActiveAccounts as true to remove deleted entitlements from Entitlement Hierarchy of the Account"
+        },
+        "deleteLinks": {
+            "title": "deleteLinks",
+            "description": "Specify deleteLinks as true to allow the recon job to remove the deleted account from EIC if it has been deleted from your application"
+        },
+        "disableDeletedEntitlements": {
+            "title": "disableDeletedEntitlements",
+            "description": "This variable is no longer required after the introduction of the statusAndThresholdConfig variable. Set this to false in the current codebase."
+        },
+        "entitlementParams": {
+            "title": "entitlementParams",
+            "description": "Configure the below for Importing Entitlements"
+        },
+        "entKeyField": {
+            "title": "entKeyField",
+            "description": "Use this variable to define the key field that uniquely identifies the entitlement value."
+        },
+        "entTypeOrder": {
+            "title": "entTypeOrder",
+            "description": "Specify entitlement type order as 0 for the first entitlement type and for the second entitlement type specify 1."
         },
         "entTypes": {
-            "title": "Entitlement Types",
-            "description": "Specify the different entitlement types available for the <AppName> Application"
+            "title": "entTypes",
+            "description": "Specify all the entitlement types to import below"
+        },
+        "Group": {
+            "title": "Group",
+            "description": "Configure the below for Group entType Call"
+        },
+        "http": {
+            "title": "http",
+            "description": "Specify the below parameters to invoke the API"
+        },
+        "httpContentType": {
+            "title": "httpContentType",
+            "description": "Specify the Content-Type for the API call"
+        },
+        "httpHeaders": {
+            "title": "httpHeaders",
+            "description": "Specify the headers for the API call"
+        },
+        "httpMethod": {
+            "title": "httpMethod",
+            "description": "Specify the Http Method for the API call"
+        },
+        "idPath": {
+            "title": "idPath",
+            "description": "Specify the JSON key in API Response that holds the unique value and gets mapped to the keyField"
+        },
+        "inactivateAccountsNotInFile": {
+            "title": "inactivateAccountsNotInFile",
+            "description": "Specify inactivateAccountsNotInFile as true to change the status of accounts in EIC to inactive if the accounts are not in the list when the import job is triggered"
+        },
+        "keyField": {
+            "title": "keyField",
+            "description": "Specify accountID that EIC uses to identify whether the incoming account object is a new account or an existing account"
+        },
+        "listField": {
+            "title": "listField",
+            "description": "Specify the path in the API response to the list of account objects"
+        },
+        "listPath": {
+            "title": "listPath",
+            "description": "Specify the JSON key to the array in the API Response which holds the entitlements. In case the entitlements are not available as an array ignore the entry."
+        },
+        "nextUrl": {
+            "title": "nextUrl",
+            "description": "Configure the below to build the nextUrl used for paged results"
+        },
+        "nextUrlPath": {
+            "title": "nextUrlPath",
+            "description": "Specify the condition that checks for nextUrl path, that is, next_page in the response<br>If the path with the URL is found, it moves to the next page else, it stops"
+        },
+        "pagination": {
+            "title": "pagination",
+            "description": "Configure the below to allow paged results in the call response"
+        },
+        "processingType": {
+            "title": "processingType",
+            "description": "Specify processing type as SequentialAndIterative"
+        },
+        "Role": {
+            "title": "Role",
+            "description": "Configure the below for Role entType Call"
+        },
+        "stageNumber": {
+            "title": "stageNumber",
+            "description": "Specify the stage number as zero for the first API call"
         },
         "statusAndThresholdConfig": {
-            "title": "Status and Threshold Configuration Policy",
-            "description": "Define status mappings and import thresholds for accounts and access"
+            "title": "statusAndThresholdConfig",
+            "description": "Specify this parameter to allow the connector to perform different actions during account or access import"
+        },
+        "statusColumn": {
+            "title": "statusColumn",
+            "description": "Specify the EIC attribute which holds the status value"
+        },
+        "url": {
+            "title": "url",
+            "description": "Specify the URL for the API call"
         }
     }
 }
