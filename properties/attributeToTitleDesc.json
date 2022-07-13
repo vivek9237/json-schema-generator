@@ -34,7 +34,7 @@
         },
         "Authorization": {
             "title": "Authorization",
-            "description": "Specify the authorization mechanism that will be used when making API calls to your application."
+            "description": "Specify the authorization value that will be used when making API calls to your application."
         },
         "call": {
             "title": "Data Calls",
@@ -179,6 +179,66 @@
         "url": {
             "title": "URL",
             "description": "Specify the URL that will be used for API calls."
+        },
+        "accessToken": {
+            "title": "Access Token",
+            "description": "Specify the access token if its already available, else specify a generic value like Basic abcd."
+        },
+        "accountIdPath": {
+            "title": "Created Account ID Path",
+            "description": "Define the path of the account ID in the response JSON."
+        },
+        "acctAuth": {
+            "title": "acctAuth",
+            "description": "The name of the connection which is used in defining API calls"
+        },
+        "authentications": {
+            "title": "Authentications",
+            "description": "Configure how your authentication is built"
+        },
+        "authError": {
+            "title": "Authorization Error",
+            "description": "Specify a list of errors that may be encountered due to authentication failure or token errors."
+        },
+        "authType": {
+            "title": "Authentication Type",
+            "description": "Specify the Authentication Type from the drop-down."
+        },
+        "errorPath": {
+            "title": "Error Path",
+            "description": "Specify the path where the error message is stored."
+        },
+        "httpParams": {
+            "title": "HTTP Parameters",
+            "description": "Specify the Body elements that will be used to call the API."
+        },
+        "maxRefreshTryCount": {
+            "title": "Token",
+            "description": "Specify the the maximum number of times to refresh and get the token."
+        },
+        "name": {
+            "title": "Name",
+            "description": "Specify a name for the call to uniquely identify it."
+        },
+        "properties": {
+            "title": "Properties",
+            "description": "Specify the credentials for authenticating the application."
+        },
+        "responseColsToPropsMap": {
+            "title": "Attribute Mapping",
+            "description": "Map the properties between the target application and Saviynt"
+        },
+        "retryFailureStatusCode": {
+            "title": "Retry Failure Status Code",
+            "description": "Specify the HTTP Codes to identify a API Failures to retry the Authentication."
+        },
+        "successResponses": {
+            "title": "Success Responses",
+            "description": "Specify the HTTP Codes to identify a successful API Call."
+        },
+        "tokenType": {
+            "title": "Token Type",
+            "description": "Specify the Token Type that will be used when making API calls to your application."
         }
     }
 }
