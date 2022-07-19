@@ -1,9 +1,10 @@
 var tab = '';
 var attributeToTitleDescJson;
+var sensitiveAttributes;
 var inital = 1;
 var renderSchema = true;
 
-function readTextFile(file) {
+function readAttributeToTitleDesc(file) {
 	var rawFile = new XMLHttpRequest();
 	rawFile.open("GET", file, false);
 	rawFile.onreadystatechange = function () {
@@ -15,7 +16,21 @@ function readTextFile(file) {
 	}
 	rawFile.send(null);
 }
-readTextFile("properties/attributeToTitleDesc.json")
+function readAttributeProperties(file) {
+	var rawFile = new XMLHttpRequest();
+	rawFile.open("GET", file, false);
+	rawFile.onreadystatechange = function () {
+		if (rawFile.readyState === 4) {
+			if (rawFile.status === 200 || rawFile.status == 0) {
+				sensitiveAttributes = JSON.parse(rawFile.responseText)["sensitiveAttributes"];
+				console.log(sensitiveAttributes)
+			}
+		}
+	}
+	rawFile.send(null);
+}
+readAttributeToTitleDesc("properties/attributeToTitleDesc.json");
+readAttributeProperties("properties/attributeProperties.json");
 
 $(document).ready(function () {
 	$('input#wordwrapCheckbox').change(
@@ -258,12 +273,27 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
+						if (sensitiveAttributes.includes(attributename)) {
+							jsonSchema['sensitive'] = "true"
+						}
 					} else if (tempJsonArray[i]['type'] == 'number') {
 						jsonSchema['type'] = "number"
 						jsonSchema['title'] = getAttributeTitle(attributename);
 						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
+						if (sensitiveAttributes.includes(attributename)) {
+							jsonSchema['sensitive'] = "true"
+						}
+					} else if (tempJsonArray[i]['type'] == 'boolean') {
+						jsonSchema['type'] = "boolean"
+						jsonSchema['title'] = getAttributeTitle(attributename);
+						jsonSchema['description'] = getAttributeDescription(attributename);
+						jsonSchema['multiValued'] = "true"
+						jsonSchema['value'] = ""
+						if (sensitiveAttributes.includes(attributename)) {
+							jsonSchema['sensitive'] = "true"
+						}
 					} else {
 						jsonSchema['type'] = "json array"
 						jsonSchema['title'] = getAttributeTitle(attributename);
@@ -316,6 +346,9 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
+			if (sensitiveAttributes.includes(attributename)) {
+				jsonSchema['sensitive'] = "true"
+			}
 			if (!isNumeric(attributename)) {
 				jsonSchemaArray.push(jsonSchema)
 				propertyArray.push(attributename)
@@ -327,6 +360,9 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
+			if (sensitiveAttributes.includes(attributename)) {
+				jsonSchema['sensitive'] = "true"
+			}
 			if (!isNumeric(attributename)) {
 				jsonSchemaArray.push(jsonSchema)
 				propertyArray.push(attributename)
@@ -338,6 +374,9 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
+			if (sensitiveAttributes.includes(attributename)) {
+				jsonSchema['sensitive'] = "true"
+			}
 			if (!isNumeric(attributename)) {
 				jsonSchemaArray.push(jsonSchema)
 				propertyArray.push(attributename)
@@ -411,7 +450,7 @@ function getMergedSchema(exisitingProperties, incomingProperties) {
 			if (!_.isEqual(resultantProperties[temp], incomingProperties[temp])) {
 				if (resultantProperties[temp]['type'] != incomingProperties[temp]['type']) {
 					alert("Encountered inconsistency in the data type of attribute - '" + resultantProperties[temp]['title'] + "'\nJson Schema will not be generated!");
-					renderSchema=false;
+					renderSchema = false;
 				} else {
 					resultantProperties[temp] = getMergedSchema(resultantProperties[temp], incomingProperties[temp])
 				}
