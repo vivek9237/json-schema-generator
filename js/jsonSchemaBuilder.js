@@ -1,7 +1,8 @@
 var tab = '';
 var attributeToTitleDescJson;
 var sensitiveAttributes;
-var inital = 1;
+var schemaMapperAttributes;
+var staticAttributes;
 var renderSchema = true;
 
 function readAttributeToTitleDesc(file) {
@@ -23,7 +24,9 @@ function readAttributeProperties(file) {
 		if (rawFile.readyState === 4) {
 			if (rawFile.status === 200 || rawFile.status == 0) {
 				sensitiveAttributes = JSON.parse(rawFile.responseText)["sensitiveAttributes"];
-				console.log(sensitiveAttributes)
+				schemaMapperAttributes = JSON.parse(rawFile.responseText)["schemaMapperAttributes"];
+				console.log(schemaMapperAttributes)
+				staticAttributes = JSON.parse(rawFile.responseText)["staticAttributes"];
 			}
 		}
 	}
@@ -273,7 +276,7 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
-						if (sensitiveAttributes.includes(attributename)) {
+						if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 							jsonSchema['sensitive'] = "true"
 						}
 					} else if (tempJsonArray[i]['type'] == 'number') {
@@ -282,7 +285,7 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
-						if (sensitiveAttributes.includes(attributename)) {
+						if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 							jsonSchema['sensitive'] = "true"
 						}
 					} else if (tempJsonArray[i]['type'] == 'boolean') {
@@ -291,14 +294,14 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['description'] = getAttributeDescription(attributename);
 						jsonSchema['multiValued'] = "true"
 						jsonSchema['value'] = ""
-						if (sensitiveAttributes.includes(attributename)) {
+						if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 							jsonSchema['sensitive'] = "true"
 						}
 					} else {
 						jsonSchema['type'] = "json array"
 						jsonSchema['title'] = getAttributeTitle(attributename);
 						jsonSchema['description'] = getAttributeDescription(attributename);
-						jsonSchema['schemaType'] = "static"
+						// jsonSchema['schemaType'] = "static"
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
 						if (jsonSchema['properties'] == undefined) {
@@ -318,25 +321,40 @@ function getKeyObjectTypes(obj, tab) {
 
 				//return [attributename,jsonSchema]
 			} else {
-				jsonSchema['type'] = "json object"
-				jsonSchema['title'] = getAttributeTitle(attributename);
-				jsonSchema['description'] = getAttributeDescription(attributename);
-				jsonSchema['schemaType'] = "static"
-				jsonSchema['multiValued'] = "false"
-				jsonSchema['value'] = ""
-
-				var returnValues = getKeyObjectTypes(key, tab + "	")
-				var tempPropArray = returnValues[0]
-				var tempJsonArray = returnValues[1]
-				for (let i = 0; i < tempJsonArray.length; i++) {
-					if (jsonSchema['properties'] == null) {
-						jsonSchema['properties'] = {}
-					}
-					jsonSchema['properties'][tempPropArray[i]] = tempJsonArray[i]
-					//return [attributename,jsonSchema]
-					if (!isNumeric(attributename)) {
-						jsonSchemaArray.push(jsonSchema)
-						propertyArray.push(attributename)
+				if (schemaMapperAttributes.includes(attributename)) {
+					console.log("inside schema mapper")
+					jsonSchema['type'] = "Schema Mapper";
+					jsonSchema['title'] = "Attribute Mapping";
+					jsonSchema['description'] = "Map the properties between the target application and Saviynt";
+					jsonSchema['multiValued'] = "false";
+					jsonSchema['value'] = "";
+					jsonSchema['default'] = [];
+					jsonSchema['saviyntObject'] = "<account/entitlement>";
+					jsonSchema['ApplicationObject'] = "<Users/<EntitlementType>>";
+					jsonSchema['allowedValueTypes'] = ["char","date","bool","listAsString","boolList","json","ufjson","ufchar","epochdate"];
+					jsonSchemaArray.push(jsonSchema);
+					propertyArray.push(attributename)
+				} else{
+					jsonSchema['type'] = "json object"
+					jsonSchema['title'] = getAttributeTitle(attributename);
+					jsonSchema['description'] = getAttributeDescription(attributename);
+					// jsonSchema['schemaType'] = "static"
+					jsonSchema['multiValued'] = "false"
+					jsonSchema['value'] = ""
+	
+					var returnValues = getKeyObjectTypes(key, tab + "	")
+					var tempPropArray = returnValues[0]
+					var tempJsonArray = returnValues[1]
+					for (let i = 0; i < tempJsonArray.length; i++) {
+						if (jsonSchema['properties'] == null) {
+							jsonSchema['properties'] = {}
+						}
+						jsonSchema['properties'][tempPropArray[i]] = tempJsonArray[i]
+						//return [attributename,jsonSchema]
+						if (!isNumeric(attributename)) {
+							jsonSchemaArray.push(jsonSchema)
+							propertyArray.push(attributename)
+						}
 					}
 				}
 			}
@@ -346,7 +364,7 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
-			if (sensitiveAttributes.includes(attributename)) {
+			if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 				jsonSchema['sensitive'] = "true"
 			}
 			if (!isNumeric(attributename)) {
@@ -360,7 +378,7 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
-			if (sensitiveAttributes.includes(attributename)) {
+			if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 				jsonSchema['sensitive'] = "true"
 			}
 			if (!isNumeric(attributename)) {
@@ -374,7 +392,7 @@ function getKeyObjectTypes(obj, tab) {
 			jsonSchema['description'] = getAttributeDescription(attributename);
 			jsonSchema['multiValued'] = "false"
 			jsonSchema['value'] = ""
-			if (sensitiveAttributes.includes(attributename)) {
+			if (sensitiveAttributes.includes(attributename.toLowerCase())) {
 				jsonSchema['sensitive'] = "true"
 			}
 			if (!isNumeric(attributename)) {
@@ -416,7 +434,7 @@ function generateJsonSchema() {
 	jsonSchemaBuilder['title'] = "<Enter title here>"
 	jsonSchemaBuilder['description'] = "<Enter description here>"
 	jsonSchemaBuilder['type'] = "object"
-	jsonSchemaBuilder['schemaType'] = "static"
+	//jsonSchemaBuilder['schemaType'] = "static"
 	jsonSchemaBuilder['required'] = []
 	jsonSchemaBuilder['domainObjects'] = ["user"]
 	jsonSchemaBuilder['properties'] = {}
