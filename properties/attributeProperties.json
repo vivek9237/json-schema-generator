@@ -1,5 +1,5 @@
 {
-    "sensitiveAttributes":["password","client_secret","refresh_token","accesstoken","authorization","apikey","private_key"],
+    "sensitiveAttributes":["password","client_secret","refresh_token","accesstoken","apikey","private_key"],
     "schemaMapperAttributes":["colsToPropsMap","responseColsToPropsMap"],
     "staticAttributes":[]
 }
