@@ -82,10 +82,19 @@
 
 				&nbsp;
 				&nbsp;
-
+				<div class="custom-select" style="width:100px;">
+					<select id="isStatic">
+						<option value="STATIC">STATIC ✓</option>
+						<option value="NONSTATIC">STATIC ✗</option>
+					</select>
+				</div>
+				&nbsp;
+				&nbsp;
+				
 				<button type="button" id="generateJsonSchema" onclick="generateJsonSchema()"
 					class="controls__button controls__button--format">Generate</button>
 				&nbsp;
+				
 				<button type="button" onclick="copyJSONSchema()"
 					class="controls__button controls__button--minify">Copy</button>
 				&nbsp;

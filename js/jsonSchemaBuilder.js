@@ -23,7 +23,10 @@ function readAttributeProperties(file) {
 	rawFile.onreadystatechange = function () {
 		if (rawFile.readyState === 4) {
 			if (rawFile.status === 200 || rawFile.status == 0) {
-				sensitiveAttributes = JSON.parse(rawFile.responseText)["sensitiveAttributes"];
+				var sensitiveAttributesProp = JSON.parse(rawFile.responseText)["sensitiveAttributes"];
+				sensitiveAttributes = sensitiveAttributesProp.map(element => {
+					return element.toLowerCase();
+				});
 				schemaMapperAttributes = JSON.parse(rawFile.responseText)["schemaMapperAttributes"];
 				console.log(schemaMapperAttributes)
 				staticAttributes = JSON.parse(rawFile.responseText)["staticAttributes"];
@@ -252,6 +255,7 @@ function getAttributeDescription(attribute) {
 }
 
 function getKeyObjectTypes(obj, tab) {
+	var isStatic = document.getElementById("isStatic").value;
 	//console.log("calling getKeyObjectTypes")
 	var propertyname = "";
 	var jsonSchemaArray = []
@@ -301,7 +305,9 @@ function getKeyObjectTypes(obj, tab) {
 						jsonSchema['type'] = "json array"
 						jsonSchema['title'] = getAttributeTitle(attributename);
 						jsonSchema['description'] = getAttributeDescription(attributename);
-						// jsonSchema['schemaType'] = "static"
+						if (isStatic == "STATIC") {
+							jsonSchema['schemaType'] = "static"
+						}
 						jsonSchema['multiValued'] = "false"
 						jsonSchema['value'] = ""
 						if (jsonSchema['properties'] == undefined) {
@@ -331,17 +337,19 @@ function getKeyObjectTypes(obj, tab) {
 					jsonSchema['default'] = [];
 					jsonSchema['saviyntObject'] = "<account/entitlement>";
 					jsonSchema['ApplicationObject'] = "<Users/<EntitlementType>>";
-					jsonSchema['allowedValueTypes'] = ["char","date","bool","listAsString","boolList","json","ufjson","ufchar","epochdate"];
+					jsonSchema['allowedValueTypes'] = ["char", "date", "bool", "listAsString", "boolList", "json", "ufjson", "ufchar", "epochdate"];
 					jsonSchemaArray.push(jsonSchema);
 					propertyArray.push(attributename)
-				} else{
+				} else {
 					jsonSchema['type'] = "json object"
 					jsonSchema['title'] = getAttributeTitle(attributename);
 					jsonSchema['description'] = getAttributeDescription(attributename);
-					// jsonSchema['schemaType'] = "static"
+					if (isStatic == "STATIC") {
+						jsonSchema['schemaType'] = "static"
+					}
 					jsonSchema['multiValued'] = "false"
 					jsonSchema['value'] = ""
-	
+
 					var returnValues = getKeyObjectTypes(key, tab + "	")
 					var tempPropArray = returnValues[0]
 					var tempJsonArray = returnValues[1]
@@ -434,7 +442,10 @@ function generateJsonSchema() {
 	jsonSchemaBuilder['title'] = "<Enter title here>"
 	jsonSchemaBuilder['description'] = "<Enter description here>"
 	jsonSchemaBuilder['type'] = "object"
-	//jsonSchemaBuilder['schemaType'] = "static"
+	var isStatic = document.getElementById("isStatic").value;
+	if (isStatic == "STATIC") {
+		jsonSchemaBuilder['schemaType'] = "static"
+	}
 	jsonSchemaBuilder['required'] = []
 	jsonSchemaBuilder['domainObjects'] = ["user"]
 	jsonSchemaBuilder['properties'] = {}
